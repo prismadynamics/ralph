@@ -79,7 +79,6 @@ if test $(pwd) = "$gitdirectroy/opencv"
 then
 	git fetch --all
 	git checkout "$opencv_version"
-	mkdir build
 else
 	echo "ERROR: Could not cd into opencv folder. Check if it exists."
 fi
@@ -105,7 +104,6 @@ if test $(pwd) = "$gitdirectroy/pcl"
 then
 	git fetch --all
 	git checkout "$pcl_version"
-	mkdir build
 else
 	echo "ERROR: Could not cd into pcl folder. Check if it exists."
 fi
@@ -122,7 +120,6 @@ if test $(pwd) = "$gitdirectroy/g2o"
 then
 	git fetch --all
 	git checkout "$g2o_version"
-	mkdir build
 else
 	echo "ERROR: Could not cd into g2o folder. Check if it exists."
 fi
