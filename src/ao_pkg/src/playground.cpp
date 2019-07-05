@@ -6,7 +6,6 @@
 #include <errno.h>
 #include <vector>
 #include <sstream>
-#include <string>
 
 #include "util/ImageUtility.h"
 #include "opencv2/imgproc.hpp"
@@ -219,7 +218,6 @@ int playground_stereo_matching(int argc, char** argv){
 		return -1;
 	}
 	String GT_path = parser.get<String>("GT");
-
 	String dst_path = parser.get<String>("dst_path");
 	String dst_raw_path = parser.get<String>("dst_raw_path");
 	String dst_conf_path = parser.get<String>("dst_conf_path");
@@ -652,10 +650,11 @@ Rect computeROI(Size2i src_sz, Ptr<StereoMatcher> matcher_instance)
     Rect r(xmin, ymin, xmax - xmin, ymax - ymin);
     return r;
 }
+#include "DepthEstimation/DepthEstimatorStrategy.h"
 
 int main(int argc, char** argv) {
 	SLAM::ImageUtility* ImgUtil = new SLAM::ImageUtility();
  	//playground_stereo_matching(argc, argv);
-	 playground_featurepoint_detect();
+	DepthEstimatorStrategy depthestimate = new StereoBM();
 	return 0;
 }
