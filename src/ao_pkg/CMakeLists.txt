@@ -16,48 +16,11 @@ find_package(Eigen3 REQUIRED)
 find_package(X11 REQUIRED)
 find_package(OpenCV 4 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS thread)
-
-
-## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
-
-## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
-
-## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
-
-## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   sensor_msgs#   std_msgs
-# )
-
-## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
-
 catkin_package(
 #        LIBRARIES node_lib
 #        DEPENDS Eigen
 #        CATKIN_DEPENDS roscpp
 )
-
-
 add_definitions("-DENABLE_SSE")
 
 # Set source files
@@ -75,7 +38,6 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src
         ${catkin_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
-
 )
 message("-- catkin_LIBRARIES : " ${catkin_LIBRARIES})
 message("-- PROJECT_SOURCE_DIR : " ${PROJECT_SOURCE_DIR})
@@ -85,5 +47,11 @@ target_link_libraries(node_lib ${OpenCV_LIBS} ${catkin_LIBRARIES} ${Boost_LIBRAR
 
 add_executable(ao_node src/node.cpp src/util/ImageUtility.cpp)
 target_link_libraries(ao_node node_lib ${catkin_LIBRARIES} ${X11_LIBRARIES} ${Boost_LIBRARIES})
-add_executable(playground src/playground.cpp src/util/ImageUtility.cpp)
+
+include_directories(
+        ${PROJECT_SOURCE_DIR}/src/DepthEstimation
+        ${PROJECT_SOURCE_DIR}/src/util
+)
+set(playgroundsrc src/playground.cpp src/util/ImageUtility.cpp src/DepthEstimation/StereoBMConcrete.cpp)
+add_executable(playground ${playgroundsrc})
 target_link_libraries(playground ${OpenCV_LIBS} ${Boost_LIBRARIES})

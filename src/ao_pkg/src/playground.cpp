@@ -183,7 +183,7 @@ const std::string keys =
     "{vis_mult       |1.0               | coefficient used to scale disparity map visualizations            }"
     "{max_disparity  |160               | parameter of stereo matching                                      }"
     "{window_size    |-1                | parameter of stereo matching                                      }"
-    "{wls_lambda     |500.0            | parameter of wls post-filtering                                   }"
+    "{wls_lambda     |500.0             | parameter of wls post-filtering                                   }"
     "{wls_sigma      |1.0               | parameter of wls post-filtering                                   }"
     "{fbs_spatial    |16.0              | parameter of fbs post-filtering                                   }"
     "{fbs_luma       |8.0               | parameter of fbs post-filtering                                   }"
@@ -650,11 +650,40 @@ Rect computeROI(Size2i src_sz, Ptr<StereoMatcher> matcher_instance)
     Rect r(xmin, ymin, xmax - xmin, ymax - ymin);
     return r;
 }
-#include "DepthEstimation/DepthEstimatorStrategy.h"
 
+void stereo_playground(){
+	std::shared_ptr<DepthEstimatorStrategy> depthestimate(new StereoBMConcrete());
+	depthestimate->create();
+	std::string dir_left = std::string("/media/prismadynamics/Elements/KITTI/raw/2011_09_29/2011_09_26_drive_0117_sync/image_00/data/");
+	std::vector<std::string> files_left = std::vector<std::string>();
+	getkittidir(dir_left, files_left);
+	std::vector<cv::Mat> vector_src_left = getimages(dir_left, files_left);
+
+	std::string dir_right = std::string("/media/prismadynamics/Elements/KITTI/raw/2011_09_29/2011_09_26_drive_0117_sync/image_01/data/");
+	std::vector<std::string> files_right = std::vector<std::string>();
+	getkittidir(dir_right, files_right);
+	std::vector<cv::Mat> vector_src_right = getimages(dir_right, files_right);
+	cv::Mat dst;
+	cv::namedWindow("Disparity", WINDOW_AUTOSIZE);
+	cv::namedWindow("Original", WINDOW_AUTOSIZE);
+	for(int i = 0; i < files_left.size(); i++){
+		depthestimate->get_disparity(vector_src_left[i],vector_src_right[i], dst);
+		depthestimate->get_disparity_viz(dst,dst);
+		cv::imshow("Disparity",dst);
+		cv::imshow("Original",vector_src_left[i]);
+		cv::waitKey(50);
+	}
+}
+
+#include "DepthEstimatorStrategy.h"
+#include "StereoBMConcrete.h"
+void LOG(std::string text){
+	std::cout << text << std::endl;
+}
 int main(int argc, char** argv) {
 	SLAM::ImageUtility* ImgUtil = new SLAM::ImageUtility();
  	//playground_stereo_matching(argc, argv);
-	DepthEstimatorStrategy depthestimate = new StereoBM();
+	stereo_playground();
+
 	return 0;
 }

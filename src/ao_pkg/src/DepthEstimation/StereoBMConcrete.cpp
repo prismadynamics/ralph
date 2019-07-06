@@ -1,20 +1,26 @@
+/** @file StereoBMConcrete.cpp
+ *  @brief Concrete implimenetaion of stereo BM matching algorithm.
+ *         This class is based on opencv's documentation 
+ *         https://docs.opencv.org/4.1.0/d3/d14/tutorial_ximgproc_disparity_filtering.html 
+ * 
+ *  @author Ao Y. Yu 
+ *  @bug No known bugs.
+ */
+
 #define HAVE_EIGEN
-#include "StereoBM.h"
+#include "StereoBMConcrete.h"
 
-StereoBM::StereoBM(CameraCalibration cam_cal){
-	no_downscale = true;
-    max_disp = 160;
-    vis_mult = 1.0;
-    wsize = 7;
-
-
+StereoBMConcrete::StereoBMConcrete(CameraCalibration cam_cal){
     conf_map = cv::Mat(cam_cal.height,cam_cal.width,CV_8U);
 	conf_map = cv::Scalar(255);
 }
-StereoBM::~StereoBM(){
+StereoBMConcrete::StereoBMConcrete(){
+}
+
+StereoBMConcrete::~StereoBMConcrete(){
 
 }
-int StereoBM::create(){
+int StereoBMConcrete::create(){
     if(max_disp<=0 || max_disp%16!=0)
 	{
 		std::cout<<"Incorrect max_disparity value: it should be positive and divisible by 16"<< std::endl;
@@ -40,9 +46,9 @@ int StereoBM::create(){
 	}
     return 0;
 }
-void StereoBM::match(Image &left, Image &right){
+void StereoBMConcrete::match(Image &left, Image &right){
     if(!no_downscale){
-        StereoBM::downscale(left, right);
+        StereoBMConcrete::downscale(left, right);
     }
     cv::cvtColor(left,  left,  cv::COLOR_BGR2GRAY);
     cv::cvtColor(right, right, cv::COLOR_BGR2GRAY);
@@ -51,7 +57,7 @@ void StereoBM::match(Image &left, Image &right){
     right_matcher->compute(right, left, right_disp);
     matching_time = ((double)cv::getTickCount() - matching_time)/cv::getTickFrequency();
 }
-void StereoBM::wls_confidence_filter(Image &left, Image &filtered_disp){
+void StereoBMConcrete::wls_confidence_filter(Image &left, Image &filtered_disp){
     //! [filtering]
     wls_filter->setLambda(lambda);
     wls_filter->setSigmaColor(sigma);
@@ -65,12 +71,12 @@ void StereoBM::wls_confidence_filter(Image &left, Image &filtered_disp){
     if(!no_downscale)
     {
         // upscale raw disparity and ROI back for a proper comparison:
-        cv::resize(left_disp,left_disp,cv::Size(),2.0,2.0,cv::INTER_LINEAR_EXACT);
+        cv::resize(left_disp,left_disp,cv::Size(),2.0,2.0,cv::INTER_LINEAR);
         left_disp = left_disp*2.0;
         ROI = cv::Rect(ROI.x*2,ROI.y*2,ROI.width*2,ROI.height*2);
     }
 }
-void StereoBM::fbs_confidence_filter(Image &left, Image &filtered_disp){
+void StereoBMConcrete::fbs_confidence_filter(Image &left, Image &filtered_disp){
         //! [filtering_wls]
     wls_filter->setLambda(lambda);
     wls_filter->setSigmaColor(sigma);
@@ -108,15 +114,15 @@ void StereoBM::fbs_confidence_filter(Image &left, Image &filtered_disp){
 			(void)fbs_lambda;
 	#endif
 }
-void StereoBM::wls_no_confidence_filter(Image &left, Image &filtered_disp){
+void StereoBMConcrete::wls_no_confidence_filter(Image &left, Image &filtered_disp){
     wls_filter->setLambda(lambda);
     wls_filter->setSigmaColor(sigma);
     filtering_time = (double)cv::getTickCount();
-    wls_filter->filter(left_disp,left,filtered_disp,Mat(),ROI);
+    wls_filter->filter(left_disp,left,filtered_disp,cv::Mat(),ROI);
     filtering_time = ((double)cv::getTickCount() - filtering_time)/cv::getTickFrequency();
 
 }
-void StereoBM::downscale(Image &left, Image &right){
+void StereoBMConcrete::downscale(Image &left, Image &right){
     // downscale the views to speed-up the matching stage, as we will need to compute both left
     // and right disparity maps for confidence map computation
     //! [downscale]
@@ -129,21 +135,21 @@ void StereoBM::downscale(Image &left, Image &right){
     //! [downscale]
 }
 
-void StereoBM::get_disparity(Image &left, Image &right, DisparityMap &dst){
-    StereoBM::match(left, right);
+void StereoBMConcrete::get_disparity(Image &left, Image &right, DisparityMap &dst){
+    StereoBMConcrete::match(left, right);
     if(filter == "wls_conf"){
-        StereoBM::wls_confidence_filter(left, dst);
+        StereoBMConcrete::wls_confidence_filter(left, dst);
     }else if(filter=="fbs_conf"){
-        StereoBM::fbs_confidence_filter(left, dst);
+        StereoBMConcrete::fbs_confidence_filter(left, dst);
     }else if(filter == "wls_no_conf"){
-        StereoBM::wls_no_confidence_filter(left, dst);
+        StereoBMConcrete::wls_no_confidence_filter(left, dst);
     }else{
 		std::cout<<"Unsupported filter" << std::endl;
 	}
 }
-void StereoBM::get_depth(DisparityMap &src, DepthMap &dst){
+void StereoBMConcrete::get_depth(DisparityMap &src, DepthMap &dst){
 }
-void StereoBM::get_disparity_viz(DisparityMap &filtered_disp, Image &filtered_disp_vis){
+void StereoBMConcrete::get_disparity_viz(DisparityMap &filtered_disp, Image &filtered_disp_vis){
     cv::ximgproc::getDisparityVis(filtered_disp,filtered_disp_vis,vis_mult);
     cv::applyColorMap(filtered_disp_vis*5, filtered_disp_vis, cv::COLORMAP_JET);
 }
