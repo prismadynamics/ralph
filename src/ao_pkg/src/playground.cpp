@@ -176,7 +176,7 @@ const std::string keys =
     "{dst_path       |None              | optional path to save the resulting filtered disparity map        }"
     "{dst_raw_path   |None              | optional path to save raw disparity map before filtering          }"
     "{algorithm      |sgbm              | stereo matching method (bm or sgbm)                               }"
-    "{filter         |fbs_conf          | used post-filtering (wls_conf or wls_no_conf or fbs_conf)         }"
+    "{filter         |wls_conf          | used post-filtering (wls_conf or wls_no_conf or fbs_conf)         }"
     "{no-display     |                  | don't display results                                             }"
     "{no-downscale   |true              | force stereo matching on full-sized views to improve quality      }"
     "{dst_conf_path  |None              | optional path to save the confidence map used in filtering        }"
@@ -650,16 +650,19 @@ Rect computeROI(Size2i src_sz, Ptr<StereoMatcher> matcher_instance)
     Rect r(xmin, ymin, xmax - xmin, ymax - ymin);
     return r;
 }
+#include "DepthEstimatorStrategy.h"
+#include "StereoBMConcrete.h"
+#include "StereoSGBMConcrete.h"
 
 void stereo_playground(){
-	std::shared_ptr<DepthEstimatorStrategy> depthestimate(new StereoBMConcrete());
-	depthestimate->create();
-	std::string dir_left = std::string("/media/prismadynamics/Elements/KITTI/raw/2011_09_29/2011_09_26_drive_0117_sync/image_00/data/");
+	std::shared_ptr<DepthEstimatorStrategy> depthestimate_sgbm(new StereoSGBMConcrete());
+	depthestimate_sgbm->create();
+	std::string dir_left = std::string("/media/prismadynamics/Elements/KITTI/raw/2011_09_29/2011_09_26_drive_0051_sync/image_00/data/");
 	std::vector<std::string> files_left = std::vector<std::string>();
 	getkittidir(dir_left, files_left);
 	std::vector<cv::Mat> vector_src_left = getimages(dir_left, files_left);
 
-	std::string dir_right = std::string("/media/prismadynamics/Elements/KITTI/raw/2011_09_29/2011_09_26_drive_0117_sync/image_01/data/");
+	std::string dir_right = std::string("/media/prismadynamics/Elements/KITTI/raw/2011_09_29/2011_09_26_drive_0051_sync/image_01/data/");
 	std::vector<std::string> files_right = std::vector<std::string>();
 	getkittidir(dir_right, files_right);
 	std::vector<cv::Mat> vector_src_right = getimages(dir_right, files_right);
@@ -667,16 +670,17 @@ void stereo_playground(){
 	cv::namedWindow("Disparity", WINDOW_AUTOSIZE);
 	cv::namedWindow("Original", WINDOW_AUTOSIZE);
 	for(int i = 0; i < files_left.size(); i++){
-		depthestimate->get_disparity(vector_src_left[i],vector_src_right[i], dst);
-		depthestimate->get_disparity_viz(dst,dst);
+		cv::GaussianBlur(vector_src_left[i],vector_src_left[i], cv::Size(5,5), 0, 0);
+		cv::GaussianBlur(vector_src_right[i],vector_src_right[i], cv::Size(5,5), 0, 0);
+
+		depthestimate_sgbm->get_disparity(vector_src_left[i],vector_src_right[i], dst);
+		depthestimate_sgbm->get_disparity_viz(dst,dst);
 		cv::imshow("Disparity",dst);
 		cv::imshow("Original",vector_src_left[i]);
 		cv::waitKey(50);
 	}
 }
 
-#include "DepthEstimatorStrategy.h"
-#include "StereoBMConcrete.h"
 void LOG(std::string text){
 	std::cout << text << std::endl;
 }
