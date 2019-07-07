@@ -1,0 +1,6 @@
+[submodule "src/driver/velodyne"]
+	path = src/driver/velodyne
+	url = https://github.com/ros-drivers/velodyne.git
+[submodule "src/driver/video_stream_opencv"]
+	path = src/driver/video_stream_opencv
+	url = https://github.com/ros-drivers/video_stream_opencv.git
