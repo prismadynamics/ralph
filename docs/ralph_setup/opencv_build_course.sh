@@ -8,13 +8,6 @@ cd
 gitdirectroy="$HOME/githome"
 machine_pswd="prismadynamics" #User input password of their own computer here.
 install_system_dependancy=true
-make_and_build=false
-
-FGRED="\033[0;31m"
-FGCYAN="\033[0;36m"
-BGRED="\033[0;41m"
-FGBLUE="\033[0;35m"
-NORMAL="\033[0m"
 # Check for nvidia driver, cuda, cuDNN, and TensorRT
 
 cvVersion="4.1.0"

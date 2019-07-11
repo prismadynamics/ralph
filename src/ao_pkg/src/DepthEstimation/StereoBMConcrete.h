@@ -7,8 +7,8 @@
  *  @bug No known bugs.
  */
 
-#ifndef STEREOBM_H
-#define STEREOBM_H
+#ifndef _STEREOBM_H
+#define _STEREOBM_H
 
 #include <string>
 

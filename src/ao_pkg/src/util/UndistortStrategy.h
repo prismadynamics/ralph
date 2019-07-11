@@ -18,7 +18,7 @@
 typedef cv::Mat Image;
 class UndistortStrategy{
     public:
-        virtual ~Undistorter();
+        virtual ~UndistortStrategy();
         virtual void undistort(const Image& image, cv::OutputArray result) const = 0;
         virtual const cv::Mat& getK() const = 0;
         virtual const cv::Mat& getOriginalK() const = 0;
@@ -27,6 +27,6 @@ class UndistortStrategy{
         virtual int getInputWidth() const = 0;
         virtual int getInputHeight() const = 0;
         virtual bool isValid() const = 0;
-        static Undistorter* getUndistorterForFile(const char* configFilename);
+        static UndistortStrategy* getUndistorterForFile(const char* configFilename);
 };
 #endif

@@ -59,7 +59,7 @@ void ImageStabilization::motion_estimate(ImageVector& src){
         T.copyTo(last_T);
         double dx = T.at<double>(0,2);
         double dy = T.at<double>(1,2);
-        double da = atan2(T.at<double>(1,0), T.at<double>(0,0));
+        double da = std::atan2(T.at<double>(1,0), T.at<double>(0,0));
         transforms.push_back(TransformParam(dx, dy, da));
         curr_gray.copyTo(src[i]);
     }
@@ -88,7 +88,6 @@ TrajectoryVector ImageStabilization::smooth(TrajectoryVector trajectory, int rad
         double avg_a = sum_a / count;
         double avg_x = sum_x / count;
         double avg_y = sum_y / count;
-
         smoothed_trajectory.push_back(Trajectory(avg_x, avg_y, avg_a));
     }
     return smoothed_trajectory; 
