@@ -5,8 +5,8 @@
  *  @bug No known bugs.
  */
 
-#ifndef UNDISTORTSTRATEGY_H
-#define UNDISTORTSTRATEGY_H
+#ifndef _UNDISTORTSTRATEGY_H
+#define _UNDISTORTSTRATEGY_H
 
 #include <sstream>
 #include <fstream>

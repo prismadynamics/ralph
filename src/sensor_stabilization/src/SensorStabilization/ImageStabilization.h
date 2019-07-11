@@ -8,6 +8,7 @@
 #ifndef _IMAGESTABILIZATION_H
 #define _IMAGESTABILIZATION_H
 
+#include <iostream>
 #include <assert.h>     /* assert */
 #include <vector>
 #include <string>
@@ -15,6 +16,8 @@
 
 #include "opencv2/core.hpp"
 #include "opencv2/imagproc.hpp"
+#include "opencv2/video/tracking.hpp"
+#include "opencv2/highgui.hpp"
 
 typedef cv::Mat Image;
 typedef std::vector<Image> ImageVector;

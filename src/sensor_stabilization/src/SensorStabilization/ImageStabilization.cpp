@@ -5,7 +5,7 @@
  *  @bug No known bugs.
  */
 
-#include "ImageStabilization/ImageStabilization.h"
+#include "ImageStabilization.h"
 
 ImageStabilization::ImageStabilization(){
 
@@ -26,7 +26,7 @@ void ImageStabilization::motion_estimate(ImageVector& src){
     for(std::size_t i = 0; i <src.size(); i++){
         if(ImageStabilization::is_grayscale(src[i])){
             cv::cvtColor(src[i], src[i], cv::COLOR_BGR2GRAY);
-            std::cout << "ATTENTION: Input image is was not grayscale for image stablization. Check Set-up." << std::endl;
+            std::cout << "ATTENTION: Input image is not grayscale. Check Set-up." << std::endl;
         }
     }
 
@@ -53,7 +53,7 @@ void ImageStabilization::motion_estimate(ImageVector& src){
         }
         cv::Mat T = cv::estimateRigidTransform(prev_pts, curr_pts, false);
         if(display_image){
-            display_img_with_points(curr_gray, curr_pts)
+            ImageStabilization::display_img_with_points(curr_gray, curr_pts)
         } 
         if(T.data == NULL) last_T.copyTo(T);
         T.copyTo(last_T);
@@ -95,8 +95,7 @@ TrajectoryVector ImageStabilization::smooth(TrajectoryVector trajectory, int rad
 }
 
 TrajectoryVector ImageStabilization::cumsum(TransformVector transforms){
-    TrajectoryVector  trajectory; // trajectory at all frames
-    // Accumulated frame to frame transform
+    TrajectoryVector  trajectory;
     double a = 0;
     double x = 0;
     double y = 0;
@@ -128,7 +127,6 @@ TransformVector ImageStabilization::transform_smoother(TransformVector transform
 }
 
 void ImageStabilization::apply_smooth(){
-    cap.set(CV_CAP_PROP_POS_FRAMES, 1);
     cv::Mat T(2,3,CV_64F);
     cv::Mat frame, frame_stabilized, frame_out; 
     for( int i = 0; i < n_frames-1; i++){
