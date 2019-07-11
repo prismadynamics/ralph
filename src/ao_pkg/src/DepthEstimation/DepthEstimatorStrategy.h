@@ -7,8 +7,8 @@
  *  @bug No known bugs.
  */
 
-#ifndef DEPTHESTIMATORSTRATEGY_H
-#define DEPTHESTIMATORSTRATEGY_H
+#ifndef _DEPTHESTIMATORSTRATEGY_H
+#define _DEPTHESTIMATORSTRATEGY_H
 
 #include <iostream>
 

@@ -5,8 +5,8 @@
  *  @bug No known bugs.
  */
 
-#ifndef OPENCVUNDISTORTCONCRETE_H
-#define OPENCVUNDISTORTCONCRETE_H
+#ifndef _OPENCVUNDISTORTCONCRETE_H
+#define _OPENCVUNDISTORTCONCRETE_H
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
