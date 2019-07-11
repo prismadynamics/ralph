@@ -8,8 +8,12 @@
 #ifndef UNDISTORTSTRATEGY_H
 #define UNDISTORTSTRATEGY_H
 
+#include <sstream>
+#include <fstream>
 
 #include <opencv2/core/core.hpp>
+
+#include "util/CameraCalibration.hpp"
 
 typedef cv::Mat Image;
 class UndistortStrategy{

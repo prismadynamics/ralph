@@ -39,7 +39,7 @@ class StereoBMConcrete : public DepthEstimatorStrategy{
         double fbs_lambda = 128.0;
 
         //CameraCalibration cam_cal;
-	DisparityMap left_disp, right_disp;
+	    DisparityMap left_disp, right_disp;
         DisparityMap filtered_disp,solved_disp,solved_filtered_disp;
         ConfidenceMap conf_map;
         cv::Rect ROI;

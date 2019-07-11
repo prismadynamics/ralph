@@ -28,20 +28,12 @@ typedef cv::Mat ConfidenceMap;
 typedef cv::Mat DepthMap;
 class DepthEstimatorStrategy{
     public:
-        DepthEstimatorStrategy(){};
-        ~DepthEstimatorStrategy(){};
-        virtual int create(){
-            std::cout << "ERROR: This function should not be called from a pure virtual class. SOMETHING IS WRONG." << std::endl;
-        };
-        virtual void get_disparity(Image &left, Image &right, DisparityMap &dst){
-            std::cout << "ERROR: This function should not be called from a pure virtual class. SOMETHING IS WRONG." << std::endl;
-        };
-        virtual void get_disparity_viz(DisparityMap &filtered_disp, Image &filtered_disp_vis){
-            std::cout << "ERROR: This function should not be called from a pure virtual class. SOMETHING IS WRONG." << std::endl;
-        };
-        virtual void get_depth(Image &left, Image &right, DepthMap &dst){
-            std::cout << "ERROR: This function should not be called from a pure virtual class. SOMETHING IS WRONG." << std::endl;
-        };
+        //DepthEstimatorStrategy(){};
+        virtual ~DepthEstimatorStrategy(){};
+        virtual int create() const = 0;
+        virtual void get_disparity(Image &left, Image &right, DisparityMap &dst) const = 0;
+        virtual void get_disparity_viz(DisparityMap &filtered_disp, Image &filtered_disp_vis) const = 0;
+        virtual void get_depth(Image &left, Image &right, DepthMap &dst) const = 0;
     protected:
         inline cv::Rect computeROI(cv::Size2i src_sz, cv::Ptr<cv::StereoMatcher> matcher_instance){
             int min_disparity = matcher_instance->getMinDisparity();

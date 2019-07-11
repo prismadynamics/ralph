@@ -4,6 +4,7 @@
  *  @author Ao Y. Yu 
  *  @bug No known bugs.
  */
+#pragma once
 
 #include <string>
 #include <iostream>

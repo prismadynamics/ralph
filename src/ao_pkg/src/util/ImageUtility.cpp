@@ -7,8 +7,6 @@
 
 #include "ImageUtility.h"
 
-using namespace SLAM;
-
 ImageUtility::ImageUtility(){
 
 }
