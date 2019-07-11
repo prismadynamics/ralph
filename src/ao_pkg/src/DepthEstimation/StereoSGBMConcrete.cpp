@@ -9,11 +9,11 @@
 
 #define HAVE_EIGEN
 #include "StereoSGBMConcrete.h"
-
+/*
 StereoSGBMConcrete::StereoSGBMConcrete(CameraCalibration cam_cal){
     conf_map = cv::Mat(cam_cal.height,cam_cal.width,CV_8U);
 	conf_map = cv::Scalar(255);
-}
+}*/
 StereoSGBMConcrete::StereoSGBMConcrete(){
 }
 

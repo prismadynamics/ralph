@@ -5,8 +5,8 @@
  *  @bug No known bugs.
  */
 
-#ifndef DEPTHESTIMATORSTRATEGY_H
-#define DEPTHESTIMATORSTRATEGY_H
+#ifndef UNDISTORTSTRATEGY_H
+#define UNDISTORTSTRATEGY_H
 
 
 #include <opencv2/core/core.hpp>

@@ -13,14 +13,10 @@
 #include <string>
 
 #include "DepthEstimatorStrategy.h"
-typedef cv::Mat Image;
-typedef cv::Mat DisparityMap;
-typedef cv::Mat ConfidenceMap;
-typedef cv::Mat DepthMap;
 
 class StereoBMConcrete : public DepthEstimatorStrategy{
     public:
-        StereoBMConcrete(CameraCalibration cam_cal); //Instantiate with camera calibrations.
+        //StereoBMConcrete(CameraCalibration cam_cal); //Instantiate with camera calibrations.
         StereoBMConcrete(); //Instantiate with default values.
         ~StereoBMConcrete();
         /* virtual */ int create();
@@ -42,8 +38,8 @@ class StereoBMConcrete : public DepthEstimatorStrategy{
         double fbs_chroma = 8.0;
         double fbs_lambda = 128.0;
 
-        CameraCalibration cam_cal;
-	    DisparityMap left_disp, right_disp;
+        //CameraCalibration cam_cal;
+	DisparityMap left_disp, right_disp;
         DisparityMap filtered_disp,solved_disp,solved_filtered_disp;
         ConfidenceMap conf_map;
         cv::Rect ROI;

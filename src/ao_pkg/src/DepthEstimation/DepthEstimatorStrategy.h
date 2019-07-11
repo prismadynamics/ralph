@@ -22,8 +22,6 @@
 #include "opencv2/calib3d.hpp"
 #include "opencv2/xfeatures2d.hpp"
 
-#include "DataStructures/CameraCalibration.hpp"
-
 typedef cv::Mat Image;
 typedef cv::Mat DisparityMap;
 typedef cv::Mat ConfidenceMap;

@@ -13,14 +13,10 @@
 #include <string>
 
 #include "DepthEstimatorStrategy.h"
-typedef cv::Mat Image;
-typedef cv::Mat DisparityMap;
-typedef cv::Mat ConfidenceMap;
-typedef cv::Mat DepthMap;
 
 class StereoSGBMConcrete : public DepthEstimatorStrategy{
     public:
-        StereoSGBMConcrete(CameraCalibration cam_cal); //Instantiate with camera calibrations.
+        //StereoSGBMConcrete(CameraCalibration cam_cal); //Instantiate with camera calibrations.
         StereoSGBMConcrete(); //Instantiate with default values.
         ~StereoSGBMConcrete();
         /* virtual */ int create();
@@ -43,7 +39,7 @@ class StereoSGBMConcrete : public DepthEstimatorStrategy{
         double fbs_lambda = 128.0;
 
 
-        CameraCalibration cam_cal;
+        //CameraCalibration cam_cal;
 	    DisparityMap left_disp, right_disp;
         DisparityMap filtered_disp,solved_disp,solved_filtered_disp;
         ConfidenceMap conf_map;
