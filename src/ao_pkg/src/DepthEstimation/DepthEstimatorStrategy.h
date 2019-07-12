@@ -30,10 +30,10 @@ class DepthEstimatorStrategy{
     public:
         //DepthEstimatorStrategy(){};
         virtual ~DepthEstimatorStrategy(){};
-        virtual int create() const = 0;
-        virtual void get_disparity(Image &left, Image &right, DisparityMap &dst) const = 0;
-        virtual void get_disparity_viz(DisparityMap &filtered_disp, Image &filtered_disp_vis) const = 0;
-        virtual void get_depth(Image &left, Image &right, DepthMap &dst) const = 0;
+        virtual int create(){};
+        virtual void get_disparity(Image &left, Image &right, DisparityMap &dst){};
+        virtual void get_disparity_viz(DisparityMap &filtered_disp, Image &filtered_disp_vis){};
+        virtual void get_depth(Image &left, Image &right, DepthMap &dst){};
     protected:
         inline cv::Rect computeROI(cv::Size2i src_sz, cv::Ptr<cv::StereoMatcher> matcher_instance){
             int min_disparity = matcher_instance->getMinDisparity();

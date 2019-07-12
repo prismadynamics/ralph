@@ -47,7 +47,6 @@ void playground_featurepoint_detect(){
 }
 
 
-
 void stereo_playground(){
 	DataLoader data_loader;
 	std::shared_ptr<DepthEstimatorStrategy> depthestimate_sgbm(new StereoSGBMConcrete());
@@ -65,25 +64,24 @@ void stereo_playground(){
 
 	cv::Mat dst;
 	cv::namedWindow("Disparity", cv::WINDOW_AUTOSIZE);
-	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
+	cv::namedWindow("Original Left", cv::WINDOW_NORMAL);
+	cv::namedWindow("Original Right", cv::WINDOW_NORMAL);
 	for(int i = 0; i < files_left.size(); i++){
 		cv::GaussianBlur(vector_src_left[i],vector_src_left[i], cv::Size(5,5), 0, 0);
 		cv::GaussianBlur(vector_src_right[i],vector_src_right[i], cv::Size(5,5), 0, 0);
 		depthestimate_sgbm->get_disparity(vector_src_left[i],vector_src_right[i], dst);
 		depthestimate_sgbm->get_disparity_viz(dst,dst);
 		cv::imshow("Disparity",dst);
-		cv::imshow("Original",vector_src_left[i]);
-		cv::waitKey(50);
+		cv::imshow("Original Left",vector_src_left[i]);
+		cv::imshow("Original Right",vector_src_right[i]);
+		cv::waitKey(10);
 	}
 }
-
 void LOG(std::string text){
 	std::cout << text << std::endl;
 }
 int main(int argc, char** argv) {
-	SLAM::ImageUtility* ImgUtil = new SLAM::ImageUtility();
- 	//playground_stereo_matching(argc, argv);
+	std::shared_ptr<ImageUtility> ImgUtil(new ImageUtility());
 	stereo_playground();
-
 	return 0;
 }
