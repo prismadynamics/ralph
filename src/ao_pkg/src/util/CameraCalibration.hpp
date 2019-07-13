@@ -53,19 +53,20 @@ struct CameraCalibration{
   float stereo_baseline = 0.0; // in meters.
   std::string camera_name = "";
   std::string distortion_model = "";
-
+  std::string crop_mode = "crop";
+  
   std::vector<std::string> CameraPramatersStrings = { "image_width", "image_height", "camera_name", "camera_matrix", "distortion_model", 
                                                   "distortion_coefficients", "rectification_matrix", "projection_matrix"};
   std::vector<std::string> CameraSubPramatersStrings = { "rows", "cols", "data"};
 
-  cv::Mat camera_matrix = cv::Mat::zeros(cv::Size(3, 3), CV_32F);
+  cv::Mat camera_matrix = cv::Mat::zeros(cv::Size(3, 3), CV_64F);
   cv::Mat distortion_coefficients = cv::Mat::zeros(cv::Size(5, 1), CV_32F);
   cv::Mat rectification_matrix = cv::Mat::zeros(cv::Size(3, 3), CV_32F);
   cv::Mat projection_matrix = cv::Mat::zeros(cv::Size(4, 3), CV_32F);
   cv::Mat extrinsic_matrix = cv::Mat::eye(cv::Size(4, 4), CV_32F);
 
   // Intermediate variables. This is used to store values for different return types (Eigen or OpenCV).
-  float array_camera_matrix[9];
+  double array_camera_matrix[9];
   float array_distortion_coefficients[5];
   float array_rectification_matrix[9];
   float array_projection_matrix[12];
@@ -73,8 +74,11 @@ struct CameraCalibration{
   int get_image_width(){
     return this->image_width;
   }
-  int get_image_height(){
-    return this->image_height;
+  int get_image_width(){
+    return this->image_width;
+  }
+  std::string get_crop(){
+    return this->crop_mode;
   }
   std::string get_camera_name(){
     return this->camera_name;
@@ -98,10 +102,10 @@ struct CameraCalibration{
     return this->extrinsic_matrix;
   }
   cv::Mat get_camera_matrix(){
-    cv::Mat camera_matrix_temp = cv::Mat::zeros(cv::Size(3, 3), CV_32F);
+    cv::Mat camera_matrix_temp = cv::Mat(3, 3, CV_64F, cv::Scalar(0));
     for(int i = 0; i < 3; i++){
       for(int j = 0; j < 3; j++){
-        camera_matrix_temp.at<float>(i, j) = array_camera_matrix[i*3+j];
+        camera_matrix_temp.at<double>(i, j) = array_camera_matrix[i*3+j];
       }
     }
     assert((camera_matrix_temp.rows == 3 && camera_matrix_temp.cols == 3));
@@ -198,6 +202,11 @@ struct CameraCalibration{
             }
           }else if(in_array(SplitVec[0], CameraPramatersStrings)){
             CameraParamter = SplitVec[0];
+            if(SplitVec[0] == "image_width"){
+              image_width = std::atoi(SplitVec[1].c_str());
+            }else if(SplitVec[0] == "image_height"){
+              image_height = std::atoi(SplitVec[1].c_str());
+            }
           }
         }
         myfile.close();
@@ -206,6 +215,7 @@ struct CameraCalibration{
       distortion_coefficients = this->get_distortion_coefficients();
       rectification_matrix = this->get_rectification_matrix();
       projection_matrix = this->get_projection_matrix();
+      assert(image_width > 0 && image_height > 0);
       return 0;
   }
 
@@ -220,7 +230,7 @@ struct CameraCalibration{
     }else if(CameraParameter == "camera_matrix"){
       matrix_elements = get_matrix_elements(Value);
       for(int i = 0; i < (sizeof(array_camera_matrix)/sizeof(*array_camera_matrix)); i++){
-        array_camera_matrix[i] = std::stof(matrix_elements[i]);
+        array_camera_matrix[i] = std::stod(matrix_elements[i]);
       }
     }else if(CameraParameter == "distortion_model"){
       distortion_model = Value;

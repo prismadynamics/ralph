@@ -46,7 +46,6 @@ struct DataLoader{
 	    return 0;
 	}
 
-
 	int getkittidir(std::string dir, std::vector<std::string> &files_out){
 		std::vector<std::string> files;
 		std::vector<int> file_number;
@@ -114,4 +113,6 @@ struct DataLoader{
 		getkittidir(dir, files);
 		return loadimages(dir, files);
 	}
+
+
 };

@@ -7,9 +7,6 @@
 
 #include "UndistortStrategy.h"
 
-UndistortStrategy::~UndistortStrategy(){
-}
-
 UndistortStrategy* UndistortStrategy::getUndistorterForFile(const char* configFilename){
 	std::string completeFileName = configFilename;
 	printf("Reading Calibration from file %s",completeFileName.c_str());

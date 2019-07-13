@@ -18,15 +18,16 @@
 typedef cv::Mat Image;
 class UndistortStrategy{
     public:
-        virtual ~UndistortStrategy();
-        virtual void undistort(const Image& image, cv::OutputArray result) const = 0;
-        virtual const cv::Mat& getK() const = 0;
-        virtual const cv::Mat& getOriginalK() const = 0;
-        virtual int getOutputWidth() const = 0;
-        virtual int getOutputHeight() const = 0;
-        virtual int getInputWidth() const = 0;
-        virtual int getInputHeight() const = 0;
-        virtual bool isValid() const = 0;
+        virtual ~UndistortStrategy(){};
+        virtual void undistort(const Image& image, cv::OutputArray result) {};
+        virtual const cv::Mat& getK() {};
+        virtual const cv::Mat& getOriginalK() {};
+        virtual int getOutputWidth() {};
+        virtual int getOutputHeight() {};
+        virtual int getInputWidth() {};
+        virtual int getInputHeight() {};
+        virtual bool isValid() {};
+        virtual void print_debug() {};
         static UndistortStrategy* getUndistorterForFile(const char* configFilename);
 };
 #endif

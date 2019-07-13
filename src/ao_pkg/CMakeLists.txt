@@ -52,6 +52,12 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src/DepthEstimation
         ${PROJECT_SOURCE_DIR}/src/util
 )
-set(playgroundsrc src/playground.cpp src/util/ImageUtility.cpp src/DepthEstimation/StereoBMConcrete.cpp src/DepthEstimation/StereoSGBMConcrete.cpp)
+
+set(playgroundsrc src/playground.cpp 
+                src/util/ImageUtility.cpp 
+                src/DepthEstimation/StereoBMConcrete.cpp 
+                src/DepthEstimation/StereoSGBMConcrete.cpp 
+                src/util/OpenCVUndistortConcrete.cpp)
+
 add_executable(playground ${playgroundsrc})
 target_link_libraries(playground ${OpenCV_LIBS} ${Boost_LIBRARIES})

@@ -1,3 +1,10 @@
+/** @file playground.h
+ *  @brief main file to test out different ideas.
+ * 
+ *  @author Ao Y. Yu 
+ *  @bug No known bugs.
+ */
+
 #include <memory>
 #include <string>
 #include <iostream>
@@ -21,6 +28,7 @@
 
 #include "DepthEstimation/DepthEstimatorStrategy.h"
 #include "DepthEstimation/StereoSGBMConcrete.h"
+#include "DepthEstimation/StereoBMConcrete.h"
 
 #include "util/ImageUtility.h"
 #include "util/DataLoader.hpp"
@@ -41,7 +49,7 @@ void playground_featurepoint_detect(){
 		detector->detect( vector_src[i], keypoints );
         cv::drawKeypoints(vector_src[i], keypoints, img_keypoints, cv::Scalar(254) );
 		cv::imshow("Display window",img_keypoints);
-    	cv::waitKey(1000);     
+    	cv::waitKey(20);     
 	}
     cv::waitKey(0); 
 }
@@ -77,11 +85,35 @@ void stereo_playground(){
 		cv::waitKey(10);
 	}
 }
+
+#include "util/UndistortStrategy.h"
+#include "util/OpenCVUndistortConcrete.h"
+#include "util/CameraCalibration.hpp"
+
+void undistort_playground(){
+	std::string image_dir = std::string("/media/prismadynamics/Elements/camera_calibration/mono_calibration/1280x720/left-0008.png");
+	std::string calib_dir = std::string("/media/prismadynamics/Elements/camera_calibration/mono_calibration/1280x720/ost.yaml");
+	CameraCalibration camerCal;
+	camerCal.from_file(calib_dir);
+
+	std::shared_ptr<UndistortStrategy> undistort_util(new OpenCVUndistortConcrete(camerCal));
+	std::shared_ptr<ImageUtility> ImgUtil(new ImageUtility());
+
+	cv::Mat original_img = cv::imread(image_dir);
+	cv::Mat undistort_img;
+	undistort_util->undistort(original_img, undistort_img);
+	cv::namedWindow("Original", cv::WINDOW_NORMAL);
+	cv::namedWindow("Undistorted", cv::WINDOW_NORMAL);
+	cv::imshow("Original",original_img);
+	cv::imshow("Undistorted",undistort_img);
+	cv::waitKey(0);
+}
+
 void LOG(std::string text){
 	std::cout << text << std::endl;
 }
 int main(int argc, char** argv) {
 	std::shared_ptr<ImageUtility> ImgUtil(new ImageUtility());
-	stereo_playground();
+	undistort_playground();
 	return 0;
 }

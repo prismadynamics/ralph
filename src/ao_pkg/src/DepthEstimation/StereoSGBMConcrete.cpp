@@ -44,21 +44,21 @@ int StereoSGBMConcrete::create(){
 		std::cout<<"Unsupported filter" << std::endl;
 		return -1;
 	}
+    left_matcher->setP1(24*wsize*wsize);
+    left_matcher->setP2(96*wsize*wsize);
+    left_matcher->setPreFilterCap(63);
+    left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
     return 0;
 }
 void StereoSGBMConcrete::match(Image &left, Image &right){
     if(!no_downscale){
         StereoSGBMConcrete::downscale(left, right);
     }
-    left_matcher->setP1(24*wsize*wsize);
-    left_matcher->setP2(96*wsize*wsize);
-    left_matcher->setPreFilterCap(63);
-    left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
     matching_time = (double)cv::getTickCount();
     left_matcher-> compute(left, right,left_disp);
     right_matcher->compute(right, left, right_disp);
     matching_time = ((double)cv::getTickCount() - matching_time)/cv::getTickFrequency();
-
+    std::cout << "Match Time: " << matching_time << std::endl;
 }
 void StereoSGBMConcrete::wls_confidence_filter(Image &left, Image &filtered_disp){
     //! [filtering]

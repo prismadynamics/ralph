@@ -13,6 +13,8 @@
 #include <Eigen/Core>
 #include "util/settings.h"
 
+#include "UndistortStrategy.h"
+
 typedef cv::Mat Image;
 
 class OpenCVUndistortConcrete : public UndistortStrategy{
@@ -81,6 +83,12 @@ class OpenCVUndistortConcrete : public UndistortStrategy{
             *  @return bool
             */                    
         /* virtual */ bool isValid();
+        /** @brief Prints debug information onto screen.
+            * 
+            *  @return void
+            */                    
+        /* virtual */ void print_debug();
+
     private:
         cv::Mat K_;
         cv::Mat originalK_;
@@ -89,7 +97,6 @@ class OpenCVUndistortConcrete : public UndistortStrategy{
         int out_width, out_height;
         int in_width, in_height;
         cv::Mat map1, map2;
-        
         /// Is true if the undistorter object is valid (has been initialized with
         /// a valid configuration)
         bool valid;

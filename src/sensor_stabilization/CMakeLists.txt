@@ -14,7 +14,9 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
 )
-
+find_package(catkin REQUIRED COMPONENTS
+	ao_pkg
+)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -121,7 +123,9 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  /ao_pkg/src/util
 )
+find_package(OpenCV 4 REQUIRED)
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -201,3 +205,5 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 add_executable(node src/main.cpp)
+add_dependencies(node ${catkin_EXPORTED_TARGETS})
+target_link_libraries(node ${catkin_LIBRARIES} ${OpenCV_LIBS})
