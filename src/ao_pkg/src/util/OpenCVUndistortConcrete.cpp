@@ -58,13 +58,12 @@ OpenCVUndistortConcrete::OpenCVUndistortConcrete(const char* configFileName){
 	if(std::sscanf(l4.c_str(), "%d %d", &out_width, &out_height) == 2){
 		printf("Output resolution: %d %d\n", out_width, out_height);
 	}
-	else
+	else{
 		printf("Out: Failed to Read Output resolution... not rectifying.\n");
 		valid = false;
 	}
-	
 	cv::Mat distCoeffs = cv::Mat::zeros(4, 1, CV_32F);
-	for (int i = 0; i < 4; ++ i){
+	for(int i = 0; i < 4; ++i){
 		distCoeffs.at<float>(i, 0) = inputCalibration[4 + i];
 	}
 	originalK_ = cv::Mat(3, 3, CV_64F, cv::Scalar(0));
@@ -86,10 +85,11 @@ OpenCVUndistortConcrete::OpenCVUndistortConcrete(const char* configFileName){
 	}
 	originalK_ = originalK_.t();
 	K_ = K_.t();
-	printf("Completed UNDISTORTER./n");
+	assert(map1.rows > 0 && map1.cols > 0 && map2.rows > 0 && map2.cols > 0);
 }
 
 OpenCVUndistortConcrete::OpenCVUndistortConcrete(CameraCalibration cameraCalibration){
+	valid = true;
 	cv::Mat distCoeffs = cameraCalibration.get_distortion_coefficients();
 	originalK_ = cameraCalibration.get_camera_matrix();
     in_width = cameraCalibration.get_image_width();
@@ -97,38 +97,46 @@ OpenCVUndistortConcrete::OpenCVUndistortConcrete(CameraCalibration cameraCalibra
     out_width = in_width;
     out_height = in_height;
     std::string crop_mode = cameraCalibration.get_crop();
+
 	if(crop_mode == "crop"){
 		outputCalibration = -1;
-	}
-	else if(crop_mode == "full"){
+	}else if(crop_mode == "full"){
 		outputCalibration = -2;
-	}
-	else if(crop_mode == "none"){
+	}else if(crop_mode == "none"){
 		valid = false;
-	}
-	else{
+	}else{
 		printf("Out: Failed to Read Output pars... not rectifying.\n");
 		valid = false;
 	}
 
-    valid = true;
     if(!(in_width > 0 && in_height > 0)){
     	valid = false;
-    }
-    if(!(distCoeffs.rows == 1 && distCoeffs.cols == 5)){
+    }else if(!(distCoeffs.rows == 1 && distCoeffs.cols == 5)){
     	valid = false;
-    }
-    if(!(originalK_.rows == 3 && originalK_.cols == 3)){
+    }else if(!(originalK_.rows == 3 && originalK_.cols == 3)){
     	valid = false;
+    }else if(cameraCalibration.get_is_stereo() && cameraCalibration.get_baseline() <= 0.0){
+    	valid = false;
+    }else{
+    	valid = true;
     }
+
   	if(valid){
   		K_ = cv::getOptimalNewCameraMatrix(originalK_, distCoeffs, cv::Size(in_width, in_height), (outputCalibration == -2) ? 1 : 0, cv::Size(out_width, out_height), nullptr, false);
-		cv::initUndistortRectifyMap(originalK_, distCoeffs, cv::Mat(), K_,cv::Size(out_width, out_height), CV_16SC2, map1, map2);
+		if(cameraCalibration.get_is_stereo() && cameraCalibration.get_baseline() > 0.0){
+			cv::initUndistortRectifyMap(originalK_, distCoeffs, cameraCalibration.get_rectification_matrix(), K_,cv::Size(out_width, out_height), CV_16SC2, map1, map2);
+			//cv::initUndistortRectifyMap(originalK_, distCoeffs, cv::Mat(), K_,cv::Size(out_width, out_height), CV_16SC2, map1, map2);
+
+		}else{
+			cv::initUndistortRectifyMap(originalK_, distCoeffs, cv::Mat(), K_,cv::Size(out_width, out_height), CV_16SC2, map1, map2);
+		}
+
   	}
   	originalK_ = originalK_.t();
 	K_ = K_.t();
 	assert(map1.rows > 0 && map1.cols > 0 && map2.rows > 0 && map2.cols > 0);
 }
+
 OpenCVUndistortConcrete::OpenCVUndistortConcrete(){
 
 }
@@ -140,44 +148,36 @@ OpenCVUndistortConcrete::~OpenCVUndistortConcrete(){
 void OpenCVUndistortConcrete::print_debug(){
     std::cout << "in_width: " << in_width << std::endl;
     std::cout << "in_height: " << in_height << std::endl;
+    std::cout << "out_width: " << out_width << std::endl;
+    std::cout << "out_height: " << out_height << std::endl;
     std::cout << "valid: " << valid << std::endl;
     std::cout << "K_: " << K_ << std::endl;
+    std::cout << "originalK_: " << originalK_ << std::endl;
 }
 
 void OpenCVUndistortConcrete::undistort(const Image& image, cv::OutputArray& result){
 	cv::remap(image, result, map1, map2, cv::INTER_LINEAR);
 }
 
-const cv::Mat& OpenCVUndistortConcrete::getK()
-{
+const cv::Mat& OpenCVUndistortConcrete::getK(){
 	return K_;
 }
 
-const cv::Mat& OpenCVUndistortConcrete::getOriginalK()
-{
+const cv::Mat& OpenCVUndistortConcrete::getOriginalK(){
 	return originalK_;
 }
-
-int OpenCVUndistortConcrete::getOutputWidth()
-{
+int OpenCVUndistortConcrete::getOutputWidth(){
 	return out_width;
 }
-
-int OpenCVUndistortConcrete::getOutputHeight()
-{
+int OpenCVUndistortConcrete::getOutputHeight(){
 	return out_height;
 }
-int OpenCVUndistortConcrete::getInputWidth()
-{
+int OpenCVUndistortConcrete::getInputWidth(){
 	return in_width;
 }
-
-int OpenCVUndistortConcrete::getInputHeight()
-{
+int OpenCVUndistortConcrete::getInputHeight(){
 	return in_height;
 }
-
-bool OpenCVUndistortConcrete::isValid()
-{
+bool OpenCVUndistortConcrete::isValid(){
 	return valid;
 }

@@ -32,6 +32,7 @@
 #include <geometry_msgs/PoseStamped.h>
 
 #include "util/Undistorter.h"
+#include "util/CameraCalibration.hpp"
 
 
 namespace lsd_slam
@@ -55,7 +56,9 @@ public:
 	 */
 	void run();
 	
+	void setCalibration();
 	void setCalibration(std::string file);
+	void setCalibration(CameraCalibration cameracal);
 
 	/**
 	 * Thread main function.

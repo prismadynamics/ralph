@@ -50,11 +50,12 @@ struct CameraCalibration{
   int camera_id = 0;
   int image_width = 0;
   int image_height = 0;
+  bool is_stereo = false;
   float stereo_baseline = 0.0; // in meters.
   std::string camera_name = "";
   std::string distortion_model = "";
   std::string crop_mode = "crop";
-  
+
   std::vector<std::string> CameraPramatersStrings = { "image_width", "image_height", "camera_name", "camera_matrix", "distortion_model", 
                                                   "distortion_coefficients", "rectification_matrix", "projection_matrix"};
   std::vector<std::string> CameraSubPramatersStrings = { "rows", "cols", "data"};
@@ -71,17 +72,43 @@ struct CameraCalibration{
   float array_rectification_matrix[9];
   float array_projection_matrix[12];
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+  void set_camera_id(int src){
+    this->camera_id = src;
+  }
+  void set_image_width(int src){
+    this->image_width = src;
+  }
+  void set_image_height(int src){
+    this->image_height = src;
+  }
+  void set_is_stereo(bool src){
+    this->is_stereo = src;
+  }
+  void set_baseline(float src){
+    this->stereo_baseline = src;
+  }
+  void set_rectification_matrix(cv::Mat src){
+    this->rectification_matrix = src;
+  }
+/////////////////////////////////////////////////////////////////////////////////////////////////
   int get_image_width(){
     return this->image_width;
   }
-  int get_image_width(){
-    return this->image_width;
+  int get_image_height(){
+    return this->image_height;
   }
   std::string get_crop(){
     return this->crop_mode;
   }
   std::string get_camera_name(){
     return this->camera_name;
+  }
+  bool get_is_stereo(){
+    return this->is_stereo;
+  }
+  float get_baseline(){
+    return this->stereo_baseline;
   }
   std::string get_distortion_model(){
     return this->distortion_model;
@@ -98,9 +125,11 @@ struct CameraCalibration{
   float get_optical_center_y(){
     return this->camera_matrix.at<float>(1,2);
   }
-  cv::Mat opencv_get_extrinsics(){
+  cv::Mat get_extrinsics(){
     return this->extrinsic_matrix;
   }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
   cv::Mat get_camera_matrix(){
     cv::Mat camera_matrix_temp = cv::Mat(3, 3, CV_64F, cv::Scalar(0));
     for(int i = 0; i < 3; i++){

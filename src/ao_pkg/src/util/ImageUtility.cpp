@@ -38,7 +38,7 @@ void ImageUtility::resize(cv::Mat& src, cv::Mat& dst, int w, int h, cv::Interpol
     }
 }
 
-void ImageUtility::split_image(cv::Mat& src, cv::Mat& dst_1, cv::Mat& dst_2, ImageDimension imgdim){
+void ImageUtility::split_image(cv::Mat& src, cv::Mat& dst_1, cv::Mat& dst_2, int imgdim){
     if(src.cols % 2 != 0 || src.rows % 2 != 0){
         std::cout << "================== Start of ImageUtility Error: split_image ============" << std::endl;
         std::cout << "Image dimension is not a multiple of 2. Unable to split the image." << std::endl;
@@ -47,9 +47,9 @@ void ImageUtility::split_image(cv::Mat& src, cv::Mat& dst_1, cv::Mat& dst_2, Ima
     }else{
         cv::Rect ROI_1(0, 0, src.cols/2, src.rows);
         cv::Rect ROI_2(src.cols/2, 0, src.cols/2, src.rows);
-        if(imgdim == IMG_WIDTH){
+        if(imgdim == 0){
             // Image ROI is initialized as a split in the width dimension. No further action is required.
-        }else if(imgdim == IMG_HEIGHT){
+        }else if(imgdim == 1){
             // Image ROI is initialized as a split in the width dimension. Setting new dimension parameters. 
             ROI_1.x = 0;
             ROI_1.y = 0;

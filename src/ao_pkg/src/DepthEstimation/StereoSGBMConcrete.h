@@ -29,10 +29,10 @@ class StereoSGBMConcrete : public DepthEstimatorStrategy{
         bool no_downscale = true;
         //stereo matching patameters
         int max_disp = 160;
-        int wsize = 3;
+        int wsize = 21;
         //filter parameters
-        double lambda = 500.0;
-        double sigma = 1.0;
+        double lambda = 600.0;
+        double sigma = 1.3;
         double fbs_spatial = 16.0;
         double fbs_luma = 8.0;
         double fbs_chroma = 8.0;

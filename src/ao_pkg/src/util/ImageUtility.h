@@ -28,7 +28,7 @@ class ImageUtility{
             *  @param imdgim A reference for dimension to split. Enum of type ImageDimension. 
             *  @return void
             */
-        void split_image(cv::Mat& src, cv::Mat& dest_1, cv::Mat& dest_2, ImageDimension imdgim);
+        void split_image(cv::Mat& src, cv::Mat& dest_1, cv::Mat& dest_2, int imdgim = 0);
 
         /** @brief image_pyramid Calculate Gaussian and Laplacian (option) pyramids
             * 

@@ -154,5 +154,5 @@ void StereoSGBMConcrete::get_depth(DisparityMap &src, DepthMap &dst){
 }
 void StereoSGBMConcrete::get_disparity_viz(DisparityMap &filtered_disp, Image &filtered_disp_vis){
     cv::ximgproc::getDisparityVis(filtered_disp,filtered_disp_vis,vis_mult);
-    cv::applyColorMap(filtered_disp_vis*5, filtered_disp_vis, cv::COLORMAP_JET);
+    cv::applyColorMap(filtered_disp_vis*2, filtered_disp_vis, cv::COLORMAP_JET);
 }

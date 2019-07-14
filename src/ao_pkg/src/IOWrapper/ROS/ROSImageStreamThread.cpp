@@ -81,20 +81,23 @@ ROSImageStreamThread::~ROSImageStreamThread()
 {
 	delete imageBuffer;
 }
+void ROSImageStreamThread::setCalibration(){
+	ros::Subscriber info_sub         = nh_.subscribe(nh_.resolveName("camera_info"),1, &ROSImageStreamThread::infoCb, this);
+	printf("WAITING for ROS camera calibration!\n");
+	while(width_ == 0)
+	{
+		ros::getGlobalCallbackQueue()->callAvailable(ros::WallDuration(0.03));
+	}
+	printf("RECEIVED ROS camera calibration!\n");
+	info_sub.shutdown();
+	haveCalib = true;
+}
 
 void ROSImageStreamThread::setCalibration(std::string file)
 {
 	if(file == "")
 	{
-		ros::Subscriber info_sub         = nh_.subscribe(nh_.resolveName("camera_info"),1, &ROSImageStreamThread::infoCb, this);
-		printf("WAITING for ROS camera calibration!\n");
-		while(width_ == 0)
-		{
-			ros::getGlobalCallbackQueue()->callAvailable(ros::WallDuration(0.03));
-		}
-		printf("RECEIVED ROS camera calibration!\n");
-
-		info_sub.shutdown();
+		ROS_INFO("No file path is set in setCalibration.");
 	}
 	else
 	{
@@ -105,7 +108,6 @@ void ROSImageStreamThread::setCalibration(std::string file)
 			printf("Failed to read camera calibration from file... wrong syntax?\n");
 			exit(0);
 		}
-
 		fx_ = undistorter->getK().at<double>(0, 0);
 		fy_ = undistorter->getK().at<double>(1, 1);
 		cx_ = undistorter->getK().at<double>(2, 0);
@@ -114,8 +116,11 @@ void ROSImageStreamThread::setCalibration(std::string file)
 		width_ = undistorter->getOutputWidth();
 		height_ = undistorter->getOutputHeight();
 	}
-
 	haveCalib = true;
+}
+
+void ROSImageStreamThread::setCalibration(CameraCalibration cameracal){
+
 }
 
 void ROSImageStreamThread::run()

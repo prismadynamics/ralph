@@ -95,7 +95,6 @@ void undistort_playground(){
 	std::string calib_dir = std::string("/media/prismadynamics/Elements/camera_calibration/mono_calibration/1280x720/ost.yaml");
 	CameraCalibration camerCal;
 	camerCal.from_file(calib_dir);
-
 	std::shared_ptr<UndistortStrategy> undistort_util(new OpenCVUndistortConcrete(camerCal));
 	std::shared_ptr<ImageUtility> ImgUtil(new ImageUtility());
 
@@ -108,12 +107,112 @@ void undistort_playground(){
 	cv::imshow("Undistorted",undistort_img);
 	cv::waitKey(0);
 }
+void stereo_rectify_playground(){
+	std::string master_dir = "/media/prismadynamics/Elements/camera_calibration/stereo_calibration/2560x960/";
+	std::string left_image_dir = std::string(master_dir + "left-0023.png");
+	std::string right_image_dir = std::string(master_dir + "right-0023.png");
 
+	std::string left_calib_dir = std::string(master_dir + "left.yaml");
+	std::string right_calib_dir = std::string(master_dir + "right.yaml");
+
+	CameraCalibration left_cameraCal, right_cameraCal;
+	left_cameraCal.from_file(left_calib_dir);
+	right_cameraCal.from_file(right_calib_dir);
+
+	left_cameraCal.set_is_stereo(true);
+	right_cameraCal.set_is_stereo(true);
+	left_cameraCal.set_baseline(1.0);
+	right_cameraCal.set_baseline(1.0);
+	right_cameraCal.set_rectification_matrix(left_cameraCal.get_rectification_matrix());
+
+	std::shared_ptr<UndistortStrategy> left_undistort(new OpenCVUndistortConcrete(left_cameraCal));
+	std::shared_ptr<UndistortStrategy> right_undistort(new OpenCVUndistortConcrete(right_cameraCal));
+
+	cv::Mat left_original = cv::imread(left_image_dir);
+	cv::Mat right_original = cv::imread(right_image_dir);
+	cv::namedWindow("left_original", cv::WINDOW_NORMAL);
+	cv::namedWindow("right_original", cv::WINDOW_NORMAL);
+	cv::imshow("left_original",left_original);
+	cv::imshow("right_original",right_original);
+
+
+	cv::Mat left_rect;
+	cv::Mat right_rect;
+	left_undistort->undistort(left_original, left_rect);
+	right_undistort->undistort(right_original, right_rect);
+
+	cv::namedWindow("left_rect", cv::WINDOW_NORMAL);
+	cv::namedWindow("right_rect", cv::WINDOW_NORMAL);
+	cv::imshow("left_rect",left_rect);
+	cv::imshow("right_rect",right_rect);
+
+
+	std::shared_ptr<DepthEstimatorStrategy> depthestimate_sgbm(new StereoSGBMConcrete());
+	depthestimate_sgbm->create();
+	cv::Mat dst;
+
+	//cv::GaussianBlur(left_rect,left_rect, cv::Size(5,5), 0, 0);
+	//cv::GaussianBlur(right_rect,right_rect, cv::Size(5,5), 0, 0);
+	depthestimate_sgbm->get_disparity(left_rect,right_rect, dst);
+	depthestimate_sgbm->get_disparity_viz(dst,dst);
+	cv::namedWindow("Disparity", cv::WINDOW_NORMAL);
+	cv::imshow("Disparity",dst);
+	cv::waitKey(0);
+}
+
+void stereo_test(){
+	std::string master_dir = "/home/prismadynamics/";
+	cv::Mat src = cv::imread(master_dir + "my_photo-9.jpg");
+	std::string left_calib_dir = std::string("/media/prismadynamics/Elements/camera_calibration/stereo_calibration/2560x960/left.yaml");
+	std::string right_calib_dir = std::string("/media/prismadynamics/Elements/camera_calibration/stereo_calibration/2560x960/right.yaml");
+
+	std::shared_ptr<ImageUtility> ImgUtil(new ImageUtility());
+	cv::Mat left_original, right_original;
+	ImgUtil->split_image(src, left_original, right_original);
+
+	cv::namedWindow("left_original", cv::WINDOW_NORMAL);
+	cv::namedWindow("right_original", cv::WINDOW_NORMAL);
+	cv::imshow("left_original",left_original);
+	cv::imshow("right_original",right_original);
+
+	CameraCalibration left_cameraCal, right_cameraCal;
+	left_cameraCal.from_file(left_calib_dir);
+	right_cameraCal.from_file(right_calib_dir);
+
+	left_cameraCal.set_is_stereo(true);
+	right_cameraCal.set_is_stereo(true);
+	left_cameraCal.set_baseline(1.0);
+	right_cameraCal.set_baseline(1.0);
+	//right_cameraCal.set_rectification_matrix(left_cameraCal.get_rectification_matrix());
+
+	std::shared_ptr<UndistortStrategy> left_undistort(new OpenCVUndistortConcrete(left_cameraCal));
+	std::shared_ptr<UndistortStrategy> right_undistort(new OpenCVUndistortConcrete(right_cameraCal));
+	cv::Mat left_rect;
+	cv::Mat right_rect;
+	left_undistort->undistort(left_original, left_rect);
+	right_undistort->undistort(right_original, right_rect);
+	cv::namedWindow("left_rect", cv::WINDOW_NORMAL);
+	cv::namedWindow("right_rect", cv::WINDOW_NORMAL);
+	cv::imshow("left_rect",left_rect);
+	cv::imshow("right_rect",right_rect);
+
+	std::shared_ptr<DepthEstimatorStrategy> depthestimate_sgbm(new StereoSGBMConcrete());
+	depthestimate_sgbm->create();
+	cv::Mat dst;
+	//cv::GaussianBlur(left_rect,left_rect, cv::Size(5,5), 0, 0);
+	//cv::GaussianBlur(right_rect,right_rect, cv::Size(5,5), 0, 0);
+	depthestimate_sgbm->get_disparity(left_rect,right_rect, dst);
+	depthestimate_sgbm->get_disparity_viz(dst,dst);
+	cv::namedWindow("Disparity", cv::WINDOW_NORMAL);
+	cv::imshow("Disparity",dst);
+	cv::waitKey(0);
+
+
+}
 void LOG(std::string text){
 	std::cout << text << std::endl;
 }
 int main(int argc, char** argv) {
-	std::shared_ptr<ImageUtility> ImgUtil(new ImageUtility());
-	undistort_playground();
+	stereo_test();
 	return 0;
 }
