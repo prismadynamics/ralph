@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ao_pkg</name>
+  <name>playground</name>
   <version>0.0.0</version>
   <description>The camer_info_pub package</description>
 

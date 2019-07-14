@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ao_pkg)
+project(playground)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -60,4 +60,4 @@ set(playgroundsrc src/playground.cpp
                 src/util/OpenCVUndistortConcrete.cpp)
 
 add_executable(playground ${playgroundsrc})
-target_link_libraries(playground ${OpenCV_LIBS} ${Boost_LIBRARIES})
+target_link_libraries(playground ${catkin_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
