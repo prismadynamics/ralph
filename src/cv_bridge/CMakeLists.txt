@@ -4,7 +4,7 @@ project(cv_bridge)
 find_package(catkin REQUIRED COMPONENTS rosconsole sensor_msgs)
 
 find_package(Boost REQUIRED python)
-find_package(OpenCV 4 REQUIRED)
+find_package(OpenCV 4.1.0 REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include

@@ -224,22 +224,12 @@ class ImageConverter
   image_transport::Publisher image_pub_;
 
 public:
-  ImageConverter()
-    : it_(nh_)
+  ImageConverter() : it_(nh_)
   {
-    // Subscrive to input video feed and publish output video feed
     image_sub_ = it_.subscribe("/kitti/camera_color_left/image_raw", 1,
       &ImageConverter::imageCb, this);
-    image_pub_ = it_.advertise("/image_converter/output_video", 1);
-
     cv::namedWindow(OPENCV_WINDOW);
   }
-
-  ~ImageConverter()
-  {
-    cv::destroyWindow(OPENCV_WINDOW);
-  }
-
   void imageCb(const sensor_msgs::ImageConstPtr& msg)
   {
     cv_bridge::CvImagePtr cv_ptr;
@@ -252,17 +242,9 @@ public:
       ROS_ERROR("cv_bridge exception: %s", e.what());
       return;
     }
-
-    // Draw an example circle on the video stream
-    if (cv_ptr->image.rows > 60 && cv_ptr->image.cols > 60)
-      cv::circle(cv_ptr->image, cv::Point(50, 50), 10, CV_RGB(255,0,0));
-
     // Update GUI Window
     cv::imshow(OPENCV_WINDOW, cv_ptr->image);
     cv::waitKey(3);
-
-    // Output modified video stream
-    image_pub_.publish(cv_ptr->toImageMsg());
   }
 };
 
@@ -271,6 +253,7 @@ void ros_opencv(int argc, char** argv){
 	ImageConverter ic;
 	ros::spin();
 }
+///////////////////////////////// OpenCV ROS ////////////////////////
 
 void LOG(std::string text){
 	std::cout << text << std::endl;
